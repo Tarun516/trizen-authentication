@@ -15,6 +15,6 @@ export const verifyOtp = (email: string, otp: string) =>
   api.post("/verify-otp", { email, otp });
 
 export const signin = (email: string, password: string) =>
-  api.post("signin", { email, password });
+  api.post("/signin", { email, password });
 
 export const logout = (email: string) => api.post("/logout", { email });

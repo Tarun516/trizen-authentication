@@ -1,31 +1,17 @@
-import { View, Text, StyleSheet } from "react-native";
-import { Button } from "react-native-paper";
-import { COLORS } from "./theme/colors";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useAuth } from "../context/AuthContext";
-import { router } from "expo-router";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function DashboardScreen() {
-  const { setAccessToken } = useAuth();
-
-  const handleLogout = async () => {
-    await setAccessToken(null);
-    await AsyncStorage.removeItem("accessToken");
-    router.replace("/(auth)/signin");
-  };
+  const { logout } = useAuth();
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Welcome 🎉</Text>
       <Text style={styles.subtitle}>You’re logged in successfully!</Text>
-      <Button
-        mode="contained"
-        onPress={handleLogout}
-        style={styles.logoutButton}
-        labelStyle={{ color: COLORS.white }}
-      >
-        Logout
-      </Button>
+
+      <TouchableOpacity style={styles.button} onPress={logout}>
+        <Text style={styles.buttonText}>Logout</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -35,14 +21,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: COLORS.background,
+    backgroundColor: "#F8FAFC",
   },
-  title: { fontSize: 28, fontWeight: "700", color: COLORS.text },
-  subtitle: { fontSize: 16, color: "#475569", marginBottom: 20 },
-  logoutButton: {
-    borderRadius: 40,
-    backgroundColor: COLORS.danger,
-    paddingHorizontal: 20,
-    paddingVertical: 5,
+  title: { fontSize: 28, fontWeight: "700", color: "#0F172A", marginBottom: 6 },
+  subtitle: { fontSize: 16, color: "#475569", marginBottom: 24 },
+  button: {
+    backgroundColor: "#2563EB",
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 12,
   },
+  buttonText: { color: "#FFF", fontSize: 16, fontWeight: "600" },
 });

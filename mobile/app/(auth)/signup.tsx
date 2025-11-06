@@ -1,10 +1,7 @@
 import { useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, TextInput, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { router } from "expo-router";
 import { signup } from "../../lib/api";
-import AuthInput from "../../components/AuthInput";
-import AuthButton from "../../components/AuthButton";
-import { COLORS } from "../theme/colors";
 
 export default function SignupScreen() {
   const [email, setEmail] = useState("");
@@ -14,12 +11,7 @@ export default function SignupScreen() {
   const [loading, setLoading] = useState(false);
 
   const handleSignup = async () => {
-    setError("");
-    if (!email || !password || !confirm)
-      return setError("All fields are required");
-
     if (password !== confirm) return setError("Passwords do not match");
-
     try {
       setLoading(true);
       await signup(email, password);
@@ -34,43 +26,44 @@ export default function SignupScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Create Account ✨</Text>
-      <Text style={styles.subtitle}>Join Trizen and start exploring</Text>
+      <Text style={styles.subtitle}>Join and start exploring</Text>
 
-      <AuthInput
-        label="Email"
+      <TextInput
+        placeholder="Email"
+        placeholderTextColor="#999"
         value={email}
         onChangeText={setEmail}
-        keyboardType="email-address"
+        autoCapitalize="none"
+        style={styles.input}
       />
-      <AuthInput
-        label="Password"
+      <TextInput
+        placeholder="Password"
+        placeholderTextColor="#999"
+        secureTextEntry
         value={password}
         onChangeText={setPassword}
-        secureTextEntry
+        style={styles.input}
       />
-      <AuthInput
-        label="Confirm Password"
+      <TextInput
+        placeholder="Confirm Password"
+        placeholderTextColor="#999"
+        secureTextEntry
         value={confirm}
         onChangeText={setConfirm}
-        secureTextEntry
+        style={styles.input}
       />
 
       {error ? <Text style={styles.error}>{error}</Text> : null}
 
-      <AuthButton
-        title={loading ? "Signing up..." : "Sign Up"}
-        onPress={handleSignup}
-      />
+      <TouchableOpacity style={styles.button} onPress={handleSignup} disabled={loading}>
+        <Text style={styles.buttonText}>{loading ? "Creating..." : "Sign Up"}</Text>
+      </TouchableOpacity>
 
-      <Text style={styles.switchText}>
-        Already have an account?{" "}
-        <Text
-          style={{ color: COLORS.primary }}
-          onPress={() => router.push("/(auth)/signin")}
-        >
-          Sign In
+      <TouchableOpacity onPress={() => router.push("/(auth)/signin")}>
+        <Text style={styles.linkText}>
+          Already have an account? <Text style={styles.linkHighlight}>Sign In</Text>
         </Text>
-      </Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -78,28 +71,53 @@ export default function SignupScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    backgroundColor: "#F8FAFC",
     padding: 24,
-    backgroundColor: COLORS.background,
+    justifyContent: "center",
   },
   title: {
     fontSize: 28,
     fontWeight: "700",
-    color: COLORS.text,
-    marginBottom: 4,
+    color: "#0F172A",
   },
   subtitle: {
     fontSize: 15,
     color: "#64748B",
-    marginBottom: 20,
+    marginBottom: 24,
+  },
+  input: {
+    backgroundColor: "#FFF",
+    borderWidth: 1,
+    borderColor: "#CBD5E1",
+    borderRadius: 12,
+    padding: 14,
+    fontSize: 16,
+    marginBottom: 12,
+  },
+  button: {
+    backgroundColor: "#2563EB",
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: "center",
+    marginTop: 8,
+  },
+  buttonText: {
+    color: "#FFF",
+    fontSize: 16,
+    fontWeight: "600",
   },
   error: {
-    color: COLORS.danger,
-    marginVertical: 8,
+    color: "#DC2626",
+    marginBottom: 10,
   },
-  switchText: {
+  linkText: {
     textAlign: "center",
-    marginTop: 20,
-    color: COLORS.text,
+    marginTop: 18,
+    fontSize: 15,
+    color: "#475569",
+  },
+  linkHighlight: {
+    color: "#2563EB",
+    fontWeight: "600",
   },
 });
